@@ -1,9 +1,9 @@
- /*
- * Pers.cpp
- *
- * Contains main() function for Persistent Homology
- * Using Discrete Morse Theory
- */
+// Perseus.cpp
+//
+// Contains "main" function and the Python bindings for
+// Persistent Homology using discrete Morse Theory
+//
+
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -48,30 +48,31 @@ bool buildBRIPSFromDistMatrixFile(ifstream&, MComplex<CC,BC>&, RIPS<CC,double,BC
 bool buildBRIPSFromTimeSeriesFile(ifstream&, MComplex<CC,BC>&, RIPS<CC,double,BC>&);
 
 
-// main, here are the currently supported complexes:
-// cubtop, scubtop, rips, brips, brips_comrad, simtop, nmfsimtop, movie
-int main(int argc, char* argv[])
+// Rewriting of the main() function as a function
+// to be used with the Python bindings
+
+int Persistence(string input_type, string infile, string outfile, string eng)
 {
 	bool savegens = false; // store generator chains
 	bool truncate = false; // ignore boundary-less cells of top dimension when
 	                       // computing persistence: for rips complexes only.
-	// error message for wrong number of program arguments:
-	if (argc < 3 || argc > 5)
-	{
-		cout<<"\nIncorrect number of arguments!";
-		cout<<"\nUsage: <Program Name> <Input Type> <Input Filename> (optional)<Output Filename> (optional)<Engine>\n";
-		cout<<"Where: \n  1. The acceptable <Input Type> is SimTop, CubTop, Rips, etc... \n";
-		cout<<"  2. If <Output Filename> is unspecified, \"output\" will be used with suffixes.\n";
-		cout<<"  3. The legal <engine> values are R, C and A for reduction, coreduction and alternation.";
-		return -1;
 
-	}
+	// // error message for wrong number of program arguments:
+	// if (argc < 3 || argc > 5)
+	// {
+	// 	cout<<"\nIncorrect number of arguments!";
+	// 	cout<<"\nUsage: <Program Name> <Input Type> <Input Filename> (optional)<Output Filename> (optional)<Engine>\n";
+	// 	cout<<"Where: \n  1. The acceptable <Input Type> is SimTop, CubTop, Rips, etc... \n";
+	// 	cout<<"  2. If <Output Filename> is unspecified, \"output\" will be used with suffixes.\n";
+	// 	cout<<"  3. The legal <engine> values are R, C and A for reduction, coreduction and alternation.";
+	// 	return -1;
+	// }
 
-	// obtain string representations of input options:
-	string input_type = argv[1];
-	string infile = argv[2];
-	string outfile = (argc >= 4)? argv[3] : "output";
-	string eng = (argc >= 5) ? argv[4] : "a";
+	// // obtain string representations of input options:
+	// string input_type = argv[1];
+	// string infile = argv[2];
+	// string outfile = (argc >= 4)? argv[3] : "output";
+	// string eng = (argc >= 5) ? argv[4] : "a";
 
 	//cout<<"\neng is "<<eng; cin.get();
 
@@ -311,8 +312,10 @@ int main(int argc, char* argv[])
 
 	    SToplex<CC, num, double> stop;
 	    ifstream edgef;
-	    cout<<" trying to open: "<<argv[3];
-	    edgef.open(argv[3], ifstream::in);
+	    cout << " trying to open: " << outfile;
+	    edgef.open(outfile, ifstream::in);
+	    // cout<<" trying to open: "<<argv[3];
+	    // edgef.open(argv[3], ifstream::in);
 
 	    stop.makeRicci(inf,edgef);
 	    stop.writeComplex(*dcomp);
@@ -806,5 +809,19 @@ bool buildNMFSToplexFromFile (ifstream& inf, MComplex<CC,BC>& ccomp,
 	if (FLOWTALK) cout<<"\nDone!";
 	if (MAKEBPS) cin.get();
 	return true;
+}
+
+/// Python Bindings
+
+#include <pybind11/pybind11.h>
+#include <pybind11/functional.h>
+#include <pybind11/stl.h>
+
+namespace py = pybind11;
+
+PYBIND11_MODULE(_perseus, m) {
+  m.doc() = "Perseus Software for Persistent Homology Computation";
+
+  m.def("Persistence", &Persistence);
 }
 
