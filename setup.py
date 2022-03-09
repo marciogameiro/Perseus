@@ -79,7 +79,7 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='Perseus',
+    name='Perseus2',
     version='4.0.0',
     author='Marcio Gameiro',
     author_email='marciogameiro@gmail.com',
@@ -87,7 +87,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     package_dir = {'': 'src'},
-    ext_package='Perseus2',
+    ext_package='Perseus',
     ext_modules=[CMakeExtension('_perseus')],
     packages=['Perseus'],
     cmdclass=dict(build_ext=CMakeBuild),
