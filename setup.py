@@ -80,7 +80,7 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='Perseus2',
-    version='4.0.0',
+    version='4.0.1',
     author='Marcio Gameiro',
     author_email='marciogameiro@gmail.com',
     description='Perseus Software for Persistent Homology Computation',
