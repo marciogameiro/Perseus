@@ -24,4 +24,4 @@ link_directories (
 
 message("USER INCLUDE PATH IS ${USER_INCLUDE_PATH}")
 
-pybind11_add_module(_chomp src/Perseus/_perseus/Perseus.cpp)
+pybind11_add_module(_perseus src/Perseus/_perseus/Perseus.cpp)
